@@ -1,0 +1,23 @@
+language: generic
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/bin
+
+apt:
+  packages:
+    - unzip
+
+env:
+  global:
+    - TERRAFORM_VERSION=0.6.14
+    - TERRAFORM_PREFIX=$HOME/bin
+    - PATH="$TERRAFORM_PREFIX:$PATH"
+
+install:
+  - scripts/ci.sh
+
+script:
+  - terraform validate
