@@ -1,10 +1,3 @@
-variable "region" {}
-variable "domain" {}
-variable "mx_records" {}
-variable "dkim_selector" { default = "" }
-variable "dkim_record" {}
-variable "spf_record" {}
-
 resource "terraform_remote_state" "s3" {
     backend = "s3"
     config {
@@ -14,35 +7,19 @@ resource "terraform_remote_state" "s3" {
     }
 }
 
-provider "aws" {
-    region = "${var.region}"
-}
+provider "aws" {}
 
 resource "aws_route53_zone" "zone" {
     name = "${var.domain}"
     comment = "${var.domain} - managed by Terraform"
 }
 
-resource "aws_route53_record" "mx" {
-    name = "${var.domain}"
-    records = ["${split(",", var.mx_records)}"]
-    ttl = "172800"
-    type = "MX"
+module "dns_email" {
+    source = "./modules/dns_email"
+    domain = "${var.domain}"
     zone_id = "${aws_route53_zone.zone.zone_id}"
-}
-
-resource "aws_route53_record" "dkim" {
-    name = "${var.domain}"
-    records = ["${var.spf_record}"]
-    ttl = "86400"
-    type = "TXT"
-    zone_id = "${aws_route53_zone.zone.zone_id}"
-}
-
-resource "aws_route53_record" "spf" {
-    name = "${var.dkim_selector}_domainkey.${var.domain}"
-    records = ["${var.dkim_record}"]
-    ttl = "86400"
-    type = "TXT"
-    zone_id = "${aws_route53_zone.zone.zone_id}"
+    mx_records = "${var.fastmail_mx_records}"
+    dkim_selector = "${var.fastmail_dkim_selector}"
+    dkim_record = "${var.fastmail_dkim_record}"
+    spf_record = "${var.fastmail_spf_record}"
 }
