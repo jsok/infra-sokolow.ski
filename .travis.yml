@@ -8,7 +8,9 @@ apt:
     - unzip
 
 install:
-  - scripts/ci.sh
+  - mkdir -p $TERRAFORM_PREFIX
+  - curl -o /tmp/terraform.zip -sSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+  - unzip -o /tmp/terraform.zip -d $TERRAFORM_PREFIX
 
 before_script:
   - terraform remote config -backend=s3 -backend-config="bucket=terraform.sokolow.ski" -backend-config="key=terraform.tfstate"
