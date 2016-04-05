@@ -1,24 +1,29 @@
 language: generic
-
 sudo: false
-
 cache:
   directories:
-    - $HOME/bin
-
+  - "$HOME/bin"
 apt:
   packages:
     - unzip
 
-env:
-  global:
-    - TERRAFORM_VERSION=0.6.14
-    - TERRAFORM_PREFIX=$HOME/bin
-    - PATH="$TERRAFORM_PREFIX:$PATH"
-
 install:
   - scripts/ci.sh
+
+before_script:
+  - terraform remote config -backend=s3 -backend-config="bucket=terraform.sokolow.ski" -backend-config="key=terraform.tfstate"
+  - terraform remote pull
 
 script:
   - terraform validate
   - terraform get
+  - terraform apply -input=false -backup=-
+
+env:
+  global:
+    - AWS_DEFAULT_REGION=ap-southeast-2
+    - TERRAFORM_VERSION=0.6.14
+    - TERRAFORM_PREFIX=$HOME/bin
+    - PATH="$TERRAFORM_PREFIX:$PATH"
+    - secure: "baKbddE5N1sEw4mwCF1KPk+8oJlXe8GhnMAseZvhQWKrXGWlJbRoltJDCUC2ThERTxllKsHxrgPGZUeXXPtbtY6HI6dcDV/YDodDWYnS7B6n4A/cf27E5v7CwgoX3lJDwcssr+sec6l/3QwmOpRyzFSpKD0nS2qwpeZY8NhOHpCHlGKpfJhLu6jkZZKPlXv5nwtYyoCqVG8OIgNeV4zCVrHWRRNZcoHLmQvlGKG8krAj4rj3mX/Cnjn/IemM/ZQWQrJ4CGA6zw7RLVcn2pycz2pvXt+wrXetFwYWwLfuqRTEbF8uMhY2pDQTvYtU5FZac2ypEtLL/jn+urTfxaHbHltCehVM/FF8eeYYR/MceSmokL6QWIWyauZNZBZiLnPJvoSllfKmVvhWSC+m4+EsK1j3nCo9D8u4YvAGi6G8o/CShfcTWafI055lbWAOdB7Yn0MVzJEp6MO+2/FJTH3bhdyhNmipJOPj93XVZQrw8dMVM1hbbjqheNjz/gMHYUax6iMS1fU6kDCH0gyeB/6UJ31wqB416uk0GVGlSBjKcWxBDjoMMcGtu2+rn7RtfRmVZsxZZBdZpeKuGnWJJmfQisDcS8i6VJY4iznTdGpwj12FLOCl6VS3mPeHBm12ETOaTYI85jFWX42bJO7frC16m+109thbrdhO9Z6SFpOA1zE="
+    - secure: "lOgAGqLMwsYk70JTCNB3Cdp9Icpm0n7Xs/fqSeJG/NZZK0ly6vNLtrt2TrJCsPzSL6VNd5Oz9wEZvbheEiXV/FE8hd7zgfytkwwwj5UeRB0HprzDjcnIL8et5/vRsC+YWVp3JsPadZH264qYka8rIYXxd93zzlk8rPT1sAQ9zmcCONrzylVKgCL8rJBjQLHZ3iTHyrarrd4iz73UNNuOvSEcBJJEWEMIdN0Sp9/ddP2INej8uXOU7j3uOcPyfDCeuoebJlG6JNPXEwAwVr9ev1FWj+SLZpa7FcpCovDkoAivgWww4ativ2WHmrJ2YloFqUQz0m8C5/SESGQEf1/DSmALFvjQrLJT70SFcHAWZYZ4dfhT6ArvR3cbJ66KxKeYmjKjJIpGzmU9SgIMp15DO/Qmm4HeUnF0FlhH81a0iiRnNG044cL4VhVFa1UouiGJx1W5h5mJWgzm9lAFIVtCWWa3zMJk7YTBjsCEZLNgvaiqfcO6jko5oyyJY+Fb4RD6CGwnxzRiFJOk6qpw/f+bU9UmLXl8d6cjjWmvM3gsSaJfzEMFlHI2xK7NtYAy7ZMx1v7PnZTsByHyA7fimHnpg5wanoxFdKgeOsJyLDq8BQBqbmx9Av130+u5/8APT4SFpY+fMBt6Bee3/2IfnSlxiP5AmIZr0LHavZS9ceyTGVI="
