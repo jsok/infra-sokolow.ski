@@ -19,6 +19,9 @@ script:
   - terraform get
   - terraform apply -input=false -backup=-
 
+after_success:
+  - terraform remote push
+
 env:
   global:
     - AWS_DEFAULT_REGION=ap-southeast-2
