@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jsok/infra-sokolow.ski.svg?branch=master)](https://travis-ci.org/jsok/infra-sokolow.ski)
+[![Build Status](https://travis-ci.org/sokolowski/infra.svg?branch=master)](https://travis-ci.org/sokolowski/infra)
 
 # sokolow.ski infrastructure as code
 
